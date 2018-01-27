@@ -46,9 +46,9 @@ MIN=$[$RANDOM%240]
 MAX=$[$MIN+10]
 
 # input installation repo
-read -p 'Enter a url for installation repo: ' URL
-[ -z "$URL" ] && exit 0
-#URL='http://172.16.0.1/centos/7/x86_64'
+#read -p 'Enter a url for installation repo: ' URL
+#[ -z "$URL" ] && exit 0
+URL='http://172.16.0.1/centos/7/x86_64'
 
 # root用户对应密码
 read -t 10 -p 'Enter a password for login root: ' PASSWORD
@@ -80,3 +80,6 @@ systemctl enable tftp.socket dhcpd.service httpd.service
 systemctl restart tftp.socket dhcpd.service httpd.service 
 iptables -F
 setenforce 0
+
+mkdir -pv /var/www/html/centos/7/x86_64
+echo -e "\033[1;31m mount cdrom /var/www/html/centos/7/x86_64\033[0m"
