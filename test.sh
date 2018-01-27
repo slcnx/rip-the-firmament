@@ -1,7 +1,7 @@
 grep -E -i '(svm|vmx)' /proc/cpuinfo || exit 1
 ls -lh /dev/kvm
 
-yum -y -d 0 -e 0 install qemu-kvm  libvirt-daemon-kvm
+yum -y -d 0 -e 0 install qemu-kvm  libvirt-daemon-kvm virt-install
 systemctl start libvirtd.service
 
 # create NAT bridge
