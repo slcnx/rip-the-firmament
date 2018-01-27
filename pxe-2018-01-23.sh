@@ -46,9 +46,9 @@ MIN=$[$RANDOM%240]
 MAX=$[$MIN+10]
 
 # input installation repo
-#read -p 'Enter a url for installation repo: ' URL
-#[ -z "$URL" ] && exit 0
-URL='http://172.16.0.1/centos/7/x86_64'
+read -p 'Enter a url for installation repo: ' URL
+[ -z "$URL" ] && exit 0
+#URL='http://172.16.0.1/centos/7/x86_64'
 
 # root用户对应密码
 read -t 10 -p 'Enter a password for login root: ' PASSWORD
@@ -62,10 +62,10 @@ yum -y -d 0 -e 0 install tftp-server dhcp httpd syslinux
 _dhcpd
 
 # configure tftp
-\cp /usr/share/syslinux/pxelinux.0 /var/lib/tftpboot/
-\cp /var/www/html/centos/7/x86_64/images/pxeboot/vmlinuz /var/lib/tftpboot/vmlinuz
-\cp /var/www/html/centos/7/x86_64/images/pxeboot/initrd.img /var/lib/tftpboot/initrd.img
-\cp /usr/share/syslinux/{chain.c32,menu.c32,memdisk,mboot.c32} /var/lib/tftpboot/
+cp /usr/share/syslinux/pxelinux.0 /var/lib/tftpboot/
+[ -f /var/lib/tftpboot/vmlinuz ] || wget http://mirrors.aliyun.com/centos/7/os/x86_64/images/pxeboot/vmlinuz -P /var/lib/tftpboot/
+[ -f /var/lib/tftpboot/initrd.img ] || wget http://mirrors.aliyun.com/centos/7/os/x86_64/images/pxeboot/initrd.img -P /var/lib/tftpboot/ 
+cp /usr/share/syslinux/{chain.c32,menu.c32,memdisk,mboot.c32} /var/lib/tftpboot/
 mkdir -pv /var/lib/tftpboot/pxelinux.cfg/
 _default
 
@@ -81,5 +81,3 @@ systemctl restart tftp.socket dhcpd.service httpd.service
 iptables -F
 setenforce 0
 
-mkdir -pv /var/www/html/centos/7/x86_64
-echo -e "\033[1;31m mount cdrom /var/www/html/centos/7/x86_64\033[0m"
