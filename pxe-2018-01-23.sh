@@ -80,3 +80,6 @@ systemctl enable tftp.socket dhcpd.service httpd.service
 systemctl restart tftp.socket dhcpd.service httpd.service 
 iptables -F
 setenforce 0
+
+mkdir -pv /var/www/html/centos/7/x86_64
+echo -e "\033[1;31m mount cdrom /var/www/html/centos/7/x86_64\033[0m"
