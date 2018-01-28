@@ -28,12 +28,12 @@ virt_name=$(fgrep 'virt_name=' qemu.sh)
 virt_name=${virt_name#*=}
 cp /etc/libvirt/qemu/${virt_name}.xml ./test.xml
 cp ./test.xml ./$temp_xml 
-virtualName=${virtualName%.img}
 
+virtualName=${virtualName%.img}
 sed -i -r "s@(<name>)(.*)(</name>)@\1$virtualName\3@" $temp_xml
 sed -i -r "s@(<source file=)(.*)(/>)@\1\'$path\'\3@" $temp_xml
-sed -i '/uuid/d' test.xml
-sed -i '/mac address/d' test.xml
+sed -i '/uuid/d' $temp_xml
+sed -i '/mac address/d' $temp_xml
 
 image_path=$(fgrep 'path=' qemu.sh )
 image_path=${image_path#*=}
