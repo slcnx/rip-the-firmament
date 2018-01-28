@@ -2,6 +2,7 @@
 #
 # 由于br-int是NAT桥所以 路由器的IP指向br-int的地址。如果是桥接时，应该修改路由器IP
 
+# ---------------------------------------------------- pxe -----------------------------------------------------------------
 # /var/lib/tftpboot/
 _default() {
 cat > /var/lib/tftpboot/pxelinux.cfg/default << EOF
@@ -33,6 +34,7 @@ subnet ${NETWORK} netmask ${NETMASK} {
 }
 EOF
 }
+
 
 ip addr list
 read -p 'Enter a interface: ' IFACE
@@ -80,4 +82,18 @@ systemctl enable tftp.socket dhcpd.service httpd.service
 systemctl restart tftp.socket dhcpd.service httpd.service 
 iptables -F
 setenforce 0
+systemctl status tftp.socket dhcpd.service httpd.service 
 
+
+# --------------------------------------------- DNS ---------------------------------------------------------------------------
+_named() {
+  rpm -q bind &> /dev/null || yum -y -d 0 -e 0 install bind
+  sed -i -r "s@(listen-on port 53 ).*@\1{ ${IP}; };@" named.conf
+  sed -i -r "s@(allow-query ).*@\1{ any; };@" named.conf
+  install -m 640 -o root -g named named.conf /etc/named.conf
+  systemctl restart named.service
+  systemctl enable named.service
+}
+
+# named service
+_named

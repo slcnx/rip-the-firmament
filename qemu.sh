@@ -2,11 +2,11 @@
 #
 
 
-path=c7.2.img
+path=/tmp/c7.5.img
 #create images
-qemu-img create -f qcow2 -o size=120G,preallocation=metadata $path
+[ -f $path ] || qemu-img create -f qcow2 -o size=120G,preallocation=metadata $path
 
-virt_name=c7.2
+virt_name=c7.5
 # pxe 安装
 virt-install --name $virt_name --ram 2048 --vcpus 2 --disk  $path  --pxe -b br-int
 

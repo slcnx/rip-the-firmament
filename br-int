@@ -1,0 +1,9 @@
+#! /bin/bash
+#
+# chkconfig: 2345 50 50
+# create NAT bridge
+brctl addbr br-int
+iptables -t nat -A POSTROUTING -j MASQUERADE
+ifconfig br-int 172.17.0.1 netmask 255.255.0.0 up
+sysctl -w net.ipv4.ip_forward=1
+systemctl restart tftp.socket dhcpd.service httpd.service
