@@ -31,7 +31,9 @@ sed -i -r "s@(<name>)(.*)(</name>)@\1$virtualName\3@" $temp_xml
 sed -i -r "s@(<source file=)(.*)(/>)@\1\'$path\'\3@" $temp_xml
 
 # image
-cp ./c7.2.img $path
+image_path=$(fgrep 'path=' qemu.sh )
+image_path=${image_path#*=}
+cp  $image_path $path
 
 # define xml
 virsh define $temp_xml
