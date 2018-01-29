@@ -2,7 +2,11 @@
 #
 # 由于br-int是NAT桥所以 路由器的IP指向br-int的地址。如果是桥接时，应该修改路由器IP
 
+# ---------------------------------------------------- pxe -----------------------------------------------------------------
 # /var/lib/tftpboot/
+
+cdrom_path='/zz/images/CentOS-7-x86_64-Minimal-1511.iso'
+
 _default() {
 cat > /var/lib/tftpboot/pxelinux.cfg/default << EOF
 default menu.c32
@@ -34,6 +38,7 @@ subnet ${NETWORK} netmask ${NETMASK} {
 EOF
 }
 
+
 ip addr list
 read -p 'Enter a interface: ' IFACE
 [ -z "$IFACE" ] && exit 0
@@ -62,10 +67,14 @@ yum -y -d 0 -e 0 install tftp-server dhcp httpd syslinux
 _dhcpd
 
 # configure tftp
-\cp /usr/share/syslinux/pxelinux.0 /var/lib/tftpboot/
-\cp /var/www/html/centos/7/x86_64/images/pxeboot/vmlinuz /var/lib/tftpboot/vmlinuz
-\cp /var/www/html/centos/7/x86_64/images/pxeboot/initrd.img /var/lib/tftpboot/initrd.img
-\cp /usr/share/syslinux/{chain.c32,menu.c32,memdisk,mboot.c32} /var/lib/tftpboot/
+cp /usr/share/syslinux/pxelinux.0 /var/lib/tftpboot/
+
+[ -d  /var/www/html/centos/7/x86_64/ ] || mkdir -pv  /var/www/html/centos/7/x86_64/ 
+mount -r $cdrom_path  /var/www/html/centos/7/x86_64/
+\cp /var/www/html/centos/7/x86_64/images/pxeboot/vmlinuz /var/lib/tftpboot/
+\cp /var/www/html/centos/7/x86_64/images/pxeboot/initrd.img /var/lib/tftpboot/
+
+cp /usr/share/syslinux/{chain.c32,menu.c32,memdisk,mboot.c32} /var/lib/tftpboot/
 mkdir -pv /var/lib/tftpboot/pxelinux.cfg/
 _default
 
@@ -80,6 +89,18 @@ systemctl enable tftp.socket dhcpd.service httpd.service
 systemctl restart tftp.socket dhcpd.service httpd.service 
 iptables -F
 setenforce 0
+systemctl status tftp.socket dhcpd.service httpd.service 
 
-mkdir -pv /var/www/html/centos/7/x86_64
-echo -e "\033[1;31m mount cdrom /var/www/html/centos/7/x86_64\033[0m"
+
+# --------------------------------------------- DNS ---------------------------------------------------------------------------
+_named() {
+  rpm -q bind &> /dev/null || yum -y -d 0 -e 0 install bind
+  sed -i -r "s@(listen-on port 53 ).*@\1{ ${IP}; };@" named.conf
+  sed -i -r "s@(allow-query ).*@\1{ any; };@" named.conf
+  install -m 640 -o root -g named named.conf /etc/named.conf
+  systemctl restart named.service
+  systemctl enable named.service
+}
+
+# named service
+_named
