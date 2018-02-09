@@ -6,10 +6,10 @@ or other application using the libvirt API.
 -->
 
 <domain type='kvm'>
-  <name>172.16.0.71</name>
-  <memory unit='KiB'>2097152</memory>
-  <currentMemory unit='KiB'>2097152</currentMemory>
-  <vcpu placement='static'>2</vcpu>
+  <name>172.16.0.76</name>
+  <memory unit='KiB'>532480</memory>
+  <currentMemory unit='KiB'>532480</currentMemory>
+  <vcpu placement='static'>1</vcpu>
   <os>
     <type arch='x86_64' machine='pc-i440fx-rhel7.0.0'>hvm</type>
     <boot dev='hd'/>
@@ -37,7 +37,7 @@ or other application using the libvirt API.
     <emulator>/usr/libexec/qemu-kvm</emulator>
     <disk type='file' device='disk'>
       <driver name='qemu' type='qcow2'/>
-      <source file='/images/172.16.0.71.img'/>
+      <source file='/images/172.16.0.76.img'/>
       <target dev='hda' bus='ide'/>
       <address type='drive' controller='0' bus='0' target='0' unit='0'/>
     </disk>
