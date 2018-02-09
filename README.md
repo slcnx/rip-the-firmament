@@ -11,3 +11,4 @@ torn the firmament
 
 克隆虚拟机 create_xml_start.sh
 
+	test.xml is a bridge exmaple xml.	

@@ -1,13 +1,12 @@
 <!--
 WARNING: THIS IS AN AUTO-GENERATED FILE. CHANGES TO IT ARE LIKELY TO BE
 OVERWRITTEN AND LOST. Changes to this xml configuration should be made using:
-  virsh edit c7.5
+  virsh edit c7.4-template
 or other application using the libvirt API.
 -->
 
 <domain type='kvm'>
-  <name>c7.5</name>
-  <uuid>afe79292-3e1f-492e-9bf8-ab141ca9d4b5</uuid>
+  <name>172.16.0.71</name>
   <memory unit='KiB'>2097152</memory>
   <currentMemory unit='KiB'>2097152</currentMemory>
   <vcpu placement='static'>2</vcpu>
@@ -19,8 +18,8 @@ or other application using the libvirt API.
     <acpi/>
     <apic/>
   </features>
-  <cpu mode='custom' match='exact' check='partial'>
-    <model fallback='allow'>Nehalem</model>
+  <cpu mode='host-model' check='partial'>
+    <model fallback='allow'/>
   </cpu>
   <clock offset='utc'>
     <timer name='rtc' tickpolicy='catchup'/>
@@ -38,7 +37,7 @@ or other application using the libvirt API.
     <emulator>/usr/libexec/qemu-kvm</emulator>
     <disk type='file' device='disk'>
       <driver name='qemu' type='qcow2'/>
-      <source file='/tmp/c7.5.img'/>
+      <source file='/images/172.16.0.71.img'/>
       <target dev='hda' bus='ide'/>
       <address type='drive' controller='0' bus='0' target='0' unit='0'/>
     </disk>
@@ -65,9 +64,8 @@ or other application using the libvirt API.
       <address type='pci' domain='0x0000' bus='0x00' slot='0x06' function='0x0'/>
     </controller>
     <interface type='bridge'>
-      <mac address='52:54:00:e9:2b:61'/>
-      <source bridge='br-int'/>
-      <model type='rtl8139'/>
+      <source bridge='br0'/>
+      <model type='virtio'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
     </interface>
     <serial type='pty'>
